@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des chercheurs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2>Liste des chercheurs</h2>
+<button onclick="loadChercheurs()">Afficher les chercheurs</button>
+
+<table id="chercheursTable">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+    </tr>
+    </thead>
+    <tbody id="chercheursBody">
+    </tbody>
+</table>
+
+<script>
+    function loadChercheurs() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost/ece2025/RestChercheur/php/PartieC/chercheurByAnnee.php');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    const chercheurs = JSON.parse(xhr.responseText);
+                    displayChercheurs(chercheurs);
+                } else {
+                    console.error('Erreur lors de la récupération des données');
+                }
+            }
+        };
+        xhr.send();
+    }
+
+    function displayChercheurs(chercheurs) {
+        const chercheursBody = document.getElementById('chercheursBody');
+        chercheursBody.innerHTML = '';
+
+        chercheurs.forEach(chercheur => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                    <td>${chercheur.NOM}</td>
+                    <td>${chercheur.PRENOM}</td>
+                `;
+            chercheursBody.appendChild(tr);
+        });
+    }
+</script>
+</body>
+</html>

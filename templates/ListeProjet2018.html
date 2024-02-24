@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projets avec un budget supérieur en 2018</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2>Projets avec un budget supérieur à un budget quelconque de l'année 2018</h2>
+<button onclick="loadProjets()">Afficher les projets</button>
+
+<table id="projetsTable">
+    <thead>
+    <tr>
+        <th>Numéro Projet</th>
+        <th>Nom du Projet</th>
+        <th>Budget</th>
+        <th>Numéro Équipe</th>
+    </tr>
+    </thead>
+    <tbody id="projetsBody">
+    </tbody>
+</table>
+
+<script>
+    function loadProjets() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost/ece2025/RestChercheur/php/PartieC/projetByBudgetAndAnnee.php');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    const projets = JSON.parse(xhr.responseText);
+                    displayProjets(projets);
+                } else {
+                    console.error('Erreur lors de la récupération des données');
+                }
+            }
+        };
+        xhr.send();
+    }
+
+    function displayProjets(projets) {
+        const projetsBody = document.getElementById('projetsBody');
+        projetsBody.innerHTML = '';
+
+        projets.forEach(projet => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                    <td>${projet.NP}</td>
+                    <td>${projet.NOM}</td>
+                    <td>${projet.BUDGET}</td>
+                    <td>${projet.NE}</td>
+                `;
+            projetsBody.appendChild(tr);
+        });
+    }
+</script>
+</body>
+</html>
